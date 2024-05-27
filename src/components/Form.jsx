@@ -8,16 +8,17 @@ import { Circles } from 'react-loader-spinner';
 import ActivityCard from './ActivityCard';
 import { useAppContext } from '../AppContext';
 
-const activities = ['Bars and Nightlife', 'Local Restaurants', 'Local Attractions', 'Shopping Districts', 'Specialty Food Shops', 'Art Galleries', 'Day Tours', 'Spa and Wellness Centers', 'Outdoor Activities', 'Fitness Centers', 'Golf Courses', 'Wine Tastings and Tours', 'Boat Rentals or Cruises', 'Cultural Experiences', 'Bicycle Rentals', 'Cooking Classes', 'Photography Services', 'Hair and Beauty Salons', 'Local Markets', 'Event Ticketing', 'Childcare Services', 'Pet Services', 'Language Classes or Translators', 'Medical Clinics or Pharmacies', 'Transportation Services'];
+const activities = ['Bars and Nightlife', 'Local Restaurants', 'Local Attractions', 'Shopping Districts', 'Coffee', 'Ice Cream', 'Specialty Food Shops', 'Art Galleries', 'Museums', 'Day Tours', 'Spa and Wellness Centers', 'Outdoor Activities', 'Fitness Centers', 'Golf Courses', 'Wine Tastings and Tours', 'Boat Rentals or Cruises', 'Cultural Experiences', 'Bicycle Rentals', 'Cooking Classes', 'Photography Services', 'Hair and Beauty Salons', 'Local Markets', 'Event Ticketing', 'Childcare Services', 'Pet Services', 'Language Classes or Translators', 'Medical Clinics or Pharmacies', 'Transportation Services'];
 
 const subActivities = {
   'Bars and Nightlife': ['Clubs', 'Dive Bars', 'Piano Bars', 'Karaoke Bars', 'Sports Bars', 'Wine Bar', 'Up Scale Bar'],
   'Local Restaurants': ['Michelin Restaurants', 'Italian', 'Mexican', 'Chinese', 'Indian', 'Thai', 'Fancy', 'American', 'Argentinean', 'Australian', 'Belgian', 'Brazilian', 'British', 'Cajun/Creole', 'Caribbean', 'Chinese', 'Cuban', 'Ethiopian', 'Filipino', 'French', 'German', 'Greek', 'Hawaiian', 'Hungarian', 'Indian', 'Irish', 'Israeli', 'Italian', 'Jamaican', 'Japanese', 'Korean', 'Lebanese', 'Malaysian', 'Mediterranean', 'Mexican', 'Moroccan', 'New Zealand', 'Nigerian', 'Persian', 'Peruvian', 'Portuguese', 'Russian', 'Scandinavian', 'Spanish', 'Swiss', 'Thai', 'Turkish', 'Vietnamese'],
-  'Local Attractions': ['Museums', 'Historical Sites', 'Amusement Parks', 'Zoos', 'Gardens', 'Landmarks'],
+  'Local Attractions': ['Historical Sites', 'Amusement Parks', 'Zoos', 'Gardens', 'Landmarks'],
   'Specialty Food Shops': ['Bakeries', 'Delis', 'Cheese Shops', 'Chocolate Shops', 'Farmers Markets', 'Gourmet Groceries'],
   'Wine Tastings and Tours': ['Vineyards', 'Wineries', 'Wine Bars', 'Wine Festivals', 'Wine Courses', 'Wine-themed Tours'],
   'Shopping Districts': ['Boutiques', 'Malls', 'Flea Markets', 'Antique Shops', 'Local Crafts', 'Souvenir Stores'],
   'Art Galleries': ['Contemporary Art', 'Traditional Art', 'Photography Exhibits', 'Sculpture Gardens', 'Art Classes', 'Artist Studios'],
+  'Museums': ['History', 'Science', 'Aeronautical', 'Automotive'],
   'Spa and Wellness Centers': ['Massage Services', 'Facials', 'Body Treatments', 'Yoga Studios', 'Fitness Classes', 'Alternative Therapies'],
   'Outdoor Activities': ['Hiking Trails', 'Camping Sites', 'Water Sports', 'Cycling Paths', 'Rock Climbing', 'Fishing Spots'],
   'Fitness Centers': ['Gyms', 'Yoga Studios', 'Pilates Studios', 'Personal Trainers', 'Group Classes', 'Sports Facilities'],
@@ -36,6 +37,8 @@ const subActivities = {
   'Transportation Services': ['Airport Shuttles', 'Taxi Services', 'Ride-sharing Services', 'Car Rentals', 'Public Transportation', 'Private Charters'],
   'Cultural Experiences': ['Traditional Performances', 'Art Exhibitions', 'Food Tours', 'Language Classes', 'Cooking Classes', 'Cultural Festivals'],
   'Day Tours': ['City Tours', 'Nature Tours', 'Food Tours', 'Adventure Tours', 'Historical Tours', 'Group Tours'],
+  'Coffee': ['Local', 'Chain', 'Drip Coffee'],
+  'Ice Cream': ['Nitrogen Ice Cream', 'Rolled Ice Cream']
   // Define sub-activities for other main activities
 };
 
@@ -142,6 +145,7 @@ const Form = () => {
         temp.push(subActivities[selectedActivityIds[activity]]);
       }
       let merged = [].concat.apply([], temp);
+      
       setSubOptionConcat(merged);
       setCurrentPage(0);
     }
@@ -152,7 +156,7 @@ const Form = () => {
     setFormPage('main');
     if (selectedDict.sub > 0 && selectedDict.main > 0) {
       for (let i = selectedDict.sub + selectedDict.main; i >= selectedDict.main; i--) {
-        delete selectedActivityIds[i];
+        selectedActivityIds.splice(i, 1);
       }
       setSelectedDict({ ...selectedDict, sub: 0 });
     }
@@ -171,21 +175,29 @@ const Form = () => {
   return (
     <div>
       {showSubOptions ? (
-        <div className='mt-2 flex-wrap max-w-[55rem]'>
+        <div className='flex mt-2 flex-wrap max-w-[55rem] flex-col justify-center items-center'>
           <p className='font-quicksand text-2xl mb-1'>What specifically are you looking for?</p>
-          <div className='flex flex-row flex-wrap w-full justify-center'>
-            <p className='font-quicksand text-2xl mb-1 text-wrap '>Selected Items: &nbsp;</p>
+          <div className='font-quicksand text-xl'>
+            <p> {selectedActivityIds.length - selectedDict.main} / 3 selected </p>
+          </div>
+          <div className='flex flex-row flex-wrap'>
+            <p className='font-quicksand text-2xl mb-1'>Selected Items: &nbsp;</p>
             {selectedActivityIds?.map((activityId) => (
-              <p key={activityId} className='font-quicksand text-2xl mb-1'>{activityId + ","}&nbsp;</p>
+              <p key={activityId} className='font-quicksand text-2xl mb-1'>{" " + activityId + ','}&nbsp;</p>
             ))}
           </div>
         </div>
       ) : !loading && !displayOptions ? (
-        <div className='flex flex-row w-full justify-center mt-2 mx-auto flex-wrap'>
-          <p className='font-quicksand text-2xl mb-1'>Selected Items: &nbsp;</p>
-          {selectedActivityIds?.map((activityId) => (
-            <p key={activityId} className='font-quicksand text-2xl mb-1'>{" " + activityId + ','}&nbsp;</p>
-          ))}
+        <div className='flex w-full justify-center items-center mt-2 mx-auto flex-wrap flex-col'>
+          <div className='font-quicksand text-xl'>
+            <p> {selectedActivityIds.length} / 3 selected </p>
+          </div>
+          <div className='flex flex-row flex-wrap'>
+            <p className='font-quicksand text-2xl mb-1'>Selected Items: &nbsp;</p>
+            {selectedActivityIds?.map((activityId) => (
+              <p key={activityId} className='font-quicksand text-2xl mb-1'>{" " + activityId + ','}&nbsp;</p>
+            ))}
+          </div>
         </div>
       ) : null}
       <div className="flex justify-center font-quicksand">
